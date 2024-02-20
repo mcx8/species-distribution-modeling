@@ -22,7 +22,10 @@
 packages <- c("tidyverse",
               "rgbif",
               "usethis",
-              "CoordinateCleaner")
+              "CoordinateCleaner",
+              "leaflet",    # For mapping later
+              "mapview",
+              "webshot2")
 
 # Install packages (if not already)
 installed_packages <- packages %in% rownames(installed.packages())
@@ -44,7 +47,13 @@ library(CoordinateCleaner)
 # ----- QUERY FROM GBIF -----
 
 # We need to edit some credentials to allow access in pulling GBIF data
+
+# This line will open a .REnviron file that will need to be edited
 usethis::edit_r_environ()
+
+# GBIF_USER = "your user name (first part of your GBIF_EMAIL before the @)"
+# GBIF_PWD = "your GBIF account password"
+# GBIF_EMAIL = "the email you're using for your GBIF account"
 
 # --
 
@@ -136,7 +145,7 @@ fData <- fData %>%
 # Rename our cleaned data
 cleanData <- fData
 
-
+write.csv(fData, "data/cleanedData.csv")
 
 
 # ----- CLEAN DATA (ALL IN ONE) -----
