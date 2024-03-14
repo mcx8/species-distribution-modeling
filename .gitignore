@@ -47,3 +47,6 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# WorldClim files
+data/wc2.1_2.5m/
