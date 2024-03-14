@@ -5,7 +5,7 @@ output:
   pdf_document: default
 ---
 
-This document outlines how to plot Maxent predictions onto a `leaflet` map — which differs from the `ggplot` version in that it displays the predictions over a base map. Most of this was covered by Jeremy in class on 3/12, so all the code until the leaflet section should be what was covered in class.
+This document outlines how to plot Maxent predictions onto a `leaflet` map --- which differs from the `ggplot` version in that it displays the predictions over a base map. Most of this was covered by Jeremy in class on 3/12, so all the code until the leaflet section should be what was covered in class.
 
 ## Install and Load Packages
 
@@ -43,6 +43,8 @@ library(webshot2)
 
 ### Current SDM
 
+I believe the only difference between the current and future SDMs is which climate (WorldClim or CMIP6) is being used, so I will only put the current SDM instructions in this document.
+
 1.  Get occurrence data
 
 ```{r, message=FALSE, warning=FALSE}
@@ -59,7 +61,8 @@ occurrenceSpatialPts <- SpatialPoints(occurrenceCoords,
 
 # This command downloads 19 different raster files, one for each climate variable
 # raster: image file comprised of pixels (locations), with each pixel associated with some value (e.g. 25 degrees)
-worldclim_global(var = "bio", res = 2.5, path = "data/", version = "2.1")
+
+# worldclim_global(var = "bio", res = 2.5, path = "data/", version = "2.1")
 
 # Update .gitignore to prevent huge files getting pushed to github!
 # Add: data/wc2.1_2.5m/
@@ -143,7 +146,8 @@ set.seed(45)
 
 # When you set the seed to a specific value, 
 # R will generate the same sequence of random numbers every time you run your code, 
-# provided that you use the same seed value. This is useful for debugging, sharing code, # and ensuring that others can reproduce your results exactly.
+# provided that you use the same seed value. This is useful for debugging, 
+# sharing code, and ensuring that others can reproduce your results exactly.
 
 backgroundPoints <- randomPoints(mask = mask, 
                                  n = nrow(occurrenceCoords), # same n 
@@ -178,9 +182,10 @@ presenceAbsenceEnvDf <- as.data.frame(rbind(occEnv, absenceEnv))
 ```{r}
 # Create a new folder called maxent_outputs
 # If you get a Java error, restart R, and reload the packages
-habronattusCurrentSDM <- dismo::maxent(x = presenceAbsenceEnvDf,    # env conditions
-                                p = presenceAbsenceV,         # 1:presence or 0:absence
-                                path = paste("maxent_outputs"))     # maxent output dir 
+habronattusCurrentSDM <- 
+  dismo::maxent(x = presenceAbsenceEnvDf,    # env conditions
+                p = presenceAbsenceV,         # 1:presence or 0:absence
+                path = paste("maxent_outputs"))     # maxent output dir 
 ```
 
 ## Plotting with `ggplot`
@@ -188,7 +193,8 @@ habronattusCurrentSDM <- dismo::maxent(x = presenceAbsenceEnvDf,    # env condit
 The ggplot version requires the results to be turned into a dataframe object first.
 
 ```{r}
-# currentClimRasterStack is huge and it isn't reasonable to predict over whole world
+# currentClimRasterStack is huge and it isn't reasonable to predict over 
+# whole world
 # First we will make it smaller
 
 # Choose here what is reasonable for your pts (where you got background pts from)
@@ -253,9 +259,9 @@ pal <- colorBin(palette = c("#4A12A4", "#FFD900"),
                     bins = 10)
 
 # Plot map
-# map1 <-
+map1 <-
 leaflet(options = leafletOptions(zoomControl = FALSE, # Removes zoom button
-                                 attributionControl = FALSE, # Removes banner at bottom
+                                 attributionControl = FALSE, # Removes banner
                                  maxZoom = 19)) %>% 
   # Add basemap
   addProviderTiles("OpenStreetMap.Mapnik") %>%
@@ -269,6 +275,8 @@ leaflet(options = leafletOptions(zoomControl = FALSE, # Removes zoom button
             values = habronattusPredictDf$layer,
             title = "Suitability",
             opacity = 1)
+
+map1
 
 # Save this map
 # mapshot2(map1, file = "output/habro_current_sdm_version1.png")
@@ -295,9 +303,9 @@ pal2 <- colorBin(palette = c("#4A12A4", "#FFD900"),
                  bins = 10)
 
 # Plot map
-# map2 <-
+map2 <-
 leaflet(options = leafletOptions(zoomControl = FALSE, # Removes zoom button
-                                 attributionControl = FALSE, # Removes banner at bottom
+                                 attributionControl = FALSE, # Removes banner
                                  maxZoom = 19)) %>% 
   # Add basemap
   addProviderTiles("OpenStreetMap.Mapnik") %>%
@@ -311,6 +319,8 @@ leaflet(options = leafletOptions(zoomControl = FALSE, # Removes zoom button
             values = habronattusPredictDf_mod$layer,
             title = "Suitability",
             opacity = 1)
+
+map2
 
 # Save this map
 # mapshot2(map1, file = "output/habro_current_sdm_version2.png")
